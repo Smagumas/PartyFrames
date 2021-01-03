@@ -269,6 +269,12 @@ function InitSettings()
 	X = X + XGAP
 	CreateSlider(PFSettings.gpanel, "GHPSIZE", 11, X, Y, 8, 64, 1, "HPSIZE")
 
+	Y = Y - YGAP
+	X = XDEFAULT
+	CreateSlider(PFSettings.gpanel, "GHPPOSX", 16, X, Y, -20, 20, 1, "HPPOSX")
+	X = X + XGAP
+	CreateSlider(PFSettings.gpanel, "GHPPOSY", 16, X, Y, -20, 20, 1, "HPPOSY")
+
 	InterfaceOptions_AddCategory(PFSettings.gpanel)
 end
 

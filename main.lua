@@ -457,6 +457,8 @@ function PFUpdateSize()
 		DESI = GetConfig("GDESI", 16)
 
 		HPSIZE = GetConfig("GHPSIZE", 11);
+		HPPOSX = GetConfig("GHPPOSX", 1);
+		HPPOSY = GetConfig("GHPPOSY", 0);
 
 		TETOTY = GetConfig("GTETOTY", "Name")
 		TECETY = GetConfig("GTECETY", "Health in Percent")
@@ -547,7 +549,7 @@ function PFUpdateSize()
 
 				PF.FRAMES[id].HealthTextTop:SetPoint("TOP", PF.FRAMES[id].HealthBackground, "TOP", 0, -3)
 
-				PF.FRAMES[id].HealthTextCen:SetPoint("CENTER", PF.FRAMES[id].HealthBackground, "CENTER", 0, 1)
+				PF.FRAMES[id].HealthTextCen:SetPoint("CENTER", PF.FRAMES[id].HealthBackground, "CENTER", HPPOSX, HPPOSY)
 				PF.FRAMES[id].HealthTextCen:SetFont("Fonts\\ARIALN.ttf", HPSIZE, "")
 
 				PF.FRAMES[id].HealthTextBot:SetPoint("BOTTOM", PF.FRAMES[id].HealthBackground, "BOTTOM", 0, 3)
@@ -665,7 +667,6 @@ function UpdateUnitInfo(uf, unit)
 		local ID = PFSortedUnits[uf.id]
 		ID = string.gsub(ID, "RAID", "")
 		ID = tonumber(ID)
-		local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, loot 
 
 		-- Health
 		if BarUp then
@@ -840,8 +841,7 @@ function UpdateUnitInfo(uf, unit)
 		elseif UnitIsDead(unit) then
 			HealthTextCen = DEAD
 		end
-		
-		uf.HealthTextCen:SetHeight(50)
+
 		uf.HealthTextCen:SetText(HealthTextCen)
 
 		if GetMaxLevelForExpansionLevel ~= nil and GetMaxLevelForExpansionLevel(GetAccountExpansionLevel()) ~= UnitLevel(unit) then
