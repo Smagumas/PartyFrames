@@ -1,0 +1,19 @@
+## Interface: 90002
+## Title: PartyFrames
+## Notes: Party Frames
+## Author: Smagumas
+## Version: 0.1
+## DefaultState: enabled
+## SavedVariables: PFTAB
+## SavedVariablesPerCharacter: PFTABPC
+
+# External Libs
+libs\LibStub\LibStub.lua
+libs\LibUIDropDownMenu\LibUIDropDownMenu.xml
+locale/enUS.lua
+libs/LIB_lang.lua
+libs/realms.lua
+
+config.lua
+
+main.lua
