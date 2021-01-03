@@ -13,8 +13,7 @@ function PFLang_enUS()
 	lang.POWI = "Power Width"
 	lang.POHE = "Power Height"
 
-	lang.GRHO = "Group Horizontal"
-	lang.BAUP = "Bar direction upwards"
+	lang.GRHO = "Horizontal party"
 	
 	lang.DESI = "Debuffsize"
 	lang.BUSI = "Buffsize"
@@ -28,5 +27,5 @@ function PFLang_enUS()
 
 	lang.DECI = "Decimals"
 
-	lang.OVER = "Overlap"
+	lang.OVER = "Shield overlap HP bar"
 end

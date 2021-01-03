@@ -156,11 +156,11 @@ function InitSettings()
 
 	local b = CreateFrame("Button", "MyButton", PFSettings.panel, "UIPanelButtonTemplate")
 	b:SetSize(200, 24) -- width, height
-	b:SetText("DISCORD")
+	b:SetText("DONATE")
 	b:SetPoint("BOTTOMLEFT", 10, 10)
 	b:SetScript("OnClick", function()
 		local iconbtn = 32
-		local s = CreateFrame("Frame", nil, UIParent) -- or you actual parent instead
+		local s = CreateFrame("Frame", nil, UIParent) -- parent
 		s:SetSize(300, 2 * iconbtn + 2 * 10)
 		s:SetPoint("CENTER")
 
@@ -170,17 +170,17 @@ function InitSettings()
 
 		s.text = s:CreateFontString(nil,"ARTWORK") 
 		s.text:SetFont("Fonts\\ARIALN.ttf", 11, "")
-		s.text:SetText("Feedback")
+		s.text:SetText("Donate")
 		s.text:SetPoint("CENTER", s, "TOP", 0, -10)
 
 		local eb = CreateFrame("EditBox", "logEditBox", s, "InputBoxTemplate")
 		eb:SetFrameStrata("DIALOG")
 		eb:SetSize(280, iconbtn)
 		eb:SetAutoFocus(false)
-		eb:SetText("https://discord.gg/UeBsafs")
+		eb:SetText("https://www.paypal.com")
 		eb:SetPoint("TOPLEFT", 10, -10 - iconbtn)
 
-		s.close = CreateFrame("Button", "closediscord", s, "UIPanelButtonTemplate")
+		s.close = CreateFrame("Button", "closepaypal", s, "UIPanelButtonTemplate")
 		s.close:SetFrameStrata("DIALOG")
 		s.close:SetPoint("TOPLEFT", 300 - 10 - iconbtn, -10)
 		s.close:SetSize(iconbtn, iconbtn)
@@ -232,9 +232,6 @@ function InitSettings()
 
 	Y = Y - YGAP
 	CreateCheckBox(PFSettings.gpanel, "GGRHO", false, 12, Y, "GRHO") -- parent, key, vval, x, y, lstr)
-
-	Y = Y - 20
-	CreateCheckBox(PFSettings.gpanel, "GBAUP", false, 12, Y, "BAUP") -- parent, key, vval, x, y, lstr)
 
 	Y = Y - 20
 	CreateCheckBox(PFSettings.gpanel, "GOVER", true, 12, Y, "OVER") -- parent, key, vval, x, y, lstr)
