@@ -5,27 +5,27 @@ lang = lang or {}
 function PFLang_enUS()
 	lang.SORTTYPE = "Sorting type"
 	
-	lang.OUBR = "Outer Border"
-	lang.ROSP = "Row Spacing"
-	lang.COSP = "Column Spacing"
-	lang.HEWI = "Health Width"
-	lang.HEHE = "Health Height"
-	lang.POWI = "Power Width"
-	lang.POHE = "Power Height"
+	lang.OUTER_BORDER = "Outer Border"
+	lang.ROW_SPACING = "Row Spacing"
+	lang.COLUMN_SPACING = "Column Spacing"
+	lang.HP_WIDTH = "Health Width"
+	lang.HP_HEIGHT = "Health Height"
+	lang.POWER_WIDTH = "Power Width"
+	lang.POWER_HEIGHT = "Power Height"
 
-	lang.GRHO = "Horizontal party"
+	lang.HORIZ_PARTY = "Horizontal party"
 	
-	lang.DESI = "Debuffsize"
-	lang.BUSI = "Buffsize"
+	lang.DEBUFF_SIZE = "Debuffsize"
+	lang.BUFF_SIZE = "Buffsize"
 
-	lang.TETOTY = "Top Text type"
-	lang.TECETY = "Healthtext type"
+	lang.TOP_TEXT_TYPE = "Top Text type"
+	lang.HP_TEXT_TYPE = "Healthtext type"
 
-	lang.SHPO = "Show Power"
+	lang.SHOW_POWER = "Show Power"
 
-	lang.DETY = "DebuffTypes"
+	lang.DEBUFF_TYPES = "DebuffTypes"
 
-	lang.DECI = "Decimals"
+	lang.DECIMALS = "Decimals"
 
-	lang.OVER = "Shield overlap HP bar"
+	lang.OVERLAP = "Shield overlap HP bar"
 end

@@ -150,7 +150,7 @@ for group = 1, 8 do
 			PF.FRAMES[id].Absorb.tileSize = 32
 			PF.FRAMES[id].Absorb:SetTexture("Interface/RaidFrame/Shield-Fill")
 			PF.FRAMES[id].Absorb:SetTexCoord(0, 1, 0, 0.53125);
-			PF.FRAMES[id].Absorb:SetVertexColor(0, 0, 0)
+			PF.FRAMES[id].Absorb:SetVertexColor(0.5, 0.5, 0.5)
 
 			PF.FRAMES[id].AbsorbOverlay = PF.FRAMES[id]:CreateTexture(nil, "OVERLAY")
 			PF.FRAMES[id].AbsorbOverlay:SetTexture("Interface/RaidFrame/Shield-Overlay", true, true);	--Tile both vertically and horizontally
@@ -184,7 +184,7 @@ for group = 1, 8 do
 
 		PF.FRAMES[id].PowerBar = PF.FRAMES[id]:CreateTexture(nil, "BACKGROUND")
 		PF.FRAMES[id].PowerBar:SetTexture("Interface/Addons/PartyFrames/assets/bar")
-		PF.FRAMES[id].PowerBar:SetVertexColor(1, 1, 1)
+		PF.FRAMES[id].PowerBar:SetColorTexture(1, 1, 1)
 
 		PF.FRAMES[id].PowerTextCen = PF.FRAMES[id]:CreateFontString(nil, "ARTWORK") 
 		PF.FRAMES[id].PowerTextCen:SetFont("Fonts\\ARIALN.ttf", 11, "")
@@ -401,22 +401,22 @@ function PFSortUnits()
 	end
 end
 
-local OUBR = 0
-local COSP = 0
-local ROSP = 0
-local HEWI = 0
-local HEHE = 0
-local POWI = 0
-local POHE = 0
+local OUTER_BORDER = 0
+local COLUMN_SPACING = 0
+local ROW_SPACING = 0
+local HP_WIDTH = 0
+local HP_HEIGHT = 0
+local POWER_WIDTH = 0
+local POWER_HEIGHT = 0
 local PLWI = 0
 local PLHE = 0
-local SHPO = true
+local SHOW_POWER = true
 local GroupHorizontal = false
-local OVER = true
-local BUSI = 16
-local DESI = 16
-local TETOTY = "Name"
-local TECETY = "Health in Percent"
+local OVERLAP = true
+local BUFF_SIZE = 16
+local DEBUFF_SIZE = 16
+local TOP_TEXT_TYPE = "Name"
+local HP_TEXT_TYPE = "Health in Percent"
 
 PFSizing = true
 PFUpdating = true
@@ -427,37 +427,37 @@ function PFUpdateSize()
 
 		PFSortUnits()
 
-		OUBR = GetConfig("GOUBR", 6)
-		COSP = GetConfig("GCOSP", 4)
-		ROSP = GetConfig("GROSP", 4)
-		HEWI = GetConfig("GHEWI", 120)
-		HEHE = GetConfig("GHEHE", 60)
-		POWI = GetConfig("GPOWI", 120)
-		POHE = GetConfig("GPOHE", 20)
+		OUTER_BORDER = GetConfig("GOUBR", 6)
+		COLUMN_SPACING = GetConfig("GCOSP", 4)
+		ROW_SPACING = GetConfig("GROSP", 4)
+		HP_WIDTH = GetConfig("GHEWI", 120)
+		HP_HEIGHT = GetConfig("GHEHE", 60)
+		POWER_WIDTH = GetConfig("GPOWI", 120)
+		POWER_HEIGHT = GetConfig("GPOHE", 20)
 
-		SHPO = GetConfig("GSHPO", true)
+		SHOW_POWER = GetConfig("GSHPO", true)
 
 		GroupHorizontal = GetConfig("GGRHO", false)
 
-		BUSI = GetConfig("GBUSI", 16)
-		DESI = GetConfig("GDESI", 16)
+		BUFF_SIZE = GetConfig("GBUSI", 16)
+		DEBUFF_SIZE = GetConfig("GDESI", 16)
 
 		HPSIZE = GetConfig("GHPSIZE", 11);
 		HPPOSX = GetConfig("GHPPOSX", 1);
 		HPPOSY = GetConfig("GHPPOSY", 0);
 
-		TETOTY = GetConfig("GTETOTY", "Name")
-		TECETY = GetConfig("GTECETY", "Health in Percent")
+		TOP_TEXT_TYPE = GetConfig("GTETOTY", "Name")
+		HP_TEXT_TYPE = GetConfig("GTECETY", "Health in Percent")
 
-		OVER = GetConfig("GOVER", true)
+		OVERLAP = GetConfig("GOVER", true)
 
-		if not SHPO then
-			POWI = 0
-			POHE = 0
+		if not SHOW_POWER then
+			POWER_WIDTH = 0
+			POWER_HEIGHT = 0
 		end
 
-		PLWI = HEWI + POWI
-		PLHE = HEHE + POHE
+		PLWI = HP_WIDTH + POWER_WIDTH
+		PLHE = HP_HEIGHT + POWER_HEIGHT
 
 		local sw = 1
 		local sh = GetNumGroupMembers()
@@ -470,11 +470,11 @@ function PFUpdateSize()
 		end
 
 		if GroupHorizontal then
-			PF:SetWidth(OUBR + sh * HEWI + (sh - 1) * COSP + OUBR)
-			PF:SetHeight(OUBR + sw * PLHE + (sw - 1) * ROSP + OUBR)
+			PF:SetWidth(OUTER_BORDER + sh * HP_WIDTH + (sh - 1) * COLUMN_SPACING + OUTER_BORDER)
+			PF:SetHeight(OUTER_BORDER + sw * PLHE + (sw - 1) * ROW_SPACING + OUTER_BORDER)
 		else
-			PF:SetWidth(OUBR + sw * HEWI + (sw - 1) * COSP + OUBR)
-			PF:SetHeight(OUBR + sh * PLHE + (sh - 1) * ROSP + OUBR)
+			PF:SetWidth(OUTER_BORDER + sw * HP_WIDTH + (sw - 1) * COLUMN_SPACING + OUTER_BORDER)
+			PF:SetHeight(OUTER_BORDER + sh * PLHE + (sh - 1) * ROW_SPACING + OUTER_BORDER)
 		end
 
 		local id = 1
@@ -482,30 +482,30 @@ function PFUpdateSize()
 			for ply = 1, 5 do
 				-- Player Box
 				if GroupHorizontal then
-					PF.FRAMES[id]:SetSize(PLWI, HEHE)
-					PF.FRAMES[id]:SetPoint("TOPLEFT", PF, "TOPLEFT", OUBR + (ply - 1) * (HEWI + COSP), -(OUBR + (group - 1) * (PLHE + ROSP)))
+					PF.FRAMES[id]:SetSize(PLWI, HP_HEIGHT)
+					PF.FRAMES[id]:SetPoint("TOPLEFT", PF, "TOPLEFT", OUTER_BORDER + (ply - 1) * (HP_WIDTH + COLUMN_SPACING), -(OUTER_BORDER + (group - 1) * (PLHE + ROW_SPACING)))
 
 				else
-					PF.FRAMES[id]:SetSize(HEWI, PLHE)
-					PF.FRAMES[id]:SetPoint("TOPLEFT", PF, "TOPLEFT", OUBR + (group - 1) * (HEWI + COSP), -(OUBR + (ply - 1) * (PLHE + ROSP)))
+					PF.FRAMES[id]:SetSize(HP_WIDTH, PLHE)
+					PF.FRAMES[id]:SetPoint("TOPLEFT", PF, "TOPLEFT", OUTER_BORDER + (group - 1) * (HP_WIDTH + COLUMN_SPACING), -(OUTER_BORDER + (ply - 1) * (PLHE + ROW_SPACING)))
 				end
 
 
 				-- Health Bar
-				PF.FRAMES[id].HealthBackground:SetSize(HEWI, HEHE)
+				PF.FRAMES[id].HealthBackground:SetSize(HP_WIDTH, HP_HEIGHT)
 				PF.FRAMES[id].HealthBackground:SetPoint("TOPLEFT", PF.FRAMES[id], "TOPLEFT", 0, 0)
 				
-				PF.FRAMES[id].HealthBar:SetSize(HEWI, HEHE)
+				PF.FRAMES[id].HealthBar:SetSize(HP_WIDTH, HP_HEIGHT)
 				PF.FRAMES[id].HealthBar:SetPoint("TOPLEFT", PF.FRAMES[id], "TOPLEFT", 0, 0)
 				
 				if PFBUILD ~= "CLASSIC" then
 					PF.FRAMES[id].Prediction:ClearAllPoints()
 					PF.FRAMES[id].Absorb:ClearAllPoints()
 
-					PF.FRAMES[id].Prediction:SetSize(HEWI, HEHE)
+					PF.FRAMES[id].Prediction:SetSize(HP_WIDTH, HP_HEIGHT)
 					PF.FRAMES[id].Prediction:SetPoint("TOPLEFT", PF.FRAMES[id].HealthBar, "TOPRIGHT", 0, 0)
 
-					PF.FRAMES[id].Absorb:SetSize(HEWI, HEHE)
+					PF.FRAMES[id].Absorb:SetSize(HP_WIDTH, HP_HEIGHT)
 					PF.FRAMES[id].Absorb:SetPoint("TOPLEFT", PF.FRAMES[id].Prediction, "TOPRIGHT", 0, 0)
 				end
 
@@ -519,13 +519,13 @@ function PFUpdateSize()
 
 
 				-- Power Bar
-				if SHPO then
+				if SHOW_POWER then
 
-					PF.FRAMES[id].PowerBackground:SetSize(HEWI, POHE)
-					PF.FRAMES[id].PowerBackground:SetPoint("TOPLEFT", PF.FRAMES[id], "TOPLEFT", 0, -HEHE)
+					PF.FRAMES[id].PowerBackground:SetSize(HP_WIDTH, POWER_HEIGHT)
+					PF.FRAMES[id].PowerBackground:SetPoint("TOPLEFT", PF.FRAMES[id], "TOPLEFT", 0, -HP_HEIGHT)
 
-					PF.FRAMES[id].PowerBar:SetSize(HEWI, POHE)
-					PF.FRAMES[id].PowerBar:SetPoint("TOPLEFT", PF.FRAMES[id], "TOPLEFT", 0, -HEHE)
+					PF.FRAMES[id].PowerBar:SetSize(HP_WIDTH, POWER_HEIGHT)
+					PF.FRAMES[id].PowerBar:SetPoint("TOPLEFT", PF.FRAMES[id], "TOPLEFT", 0, -HP_HEIGHT)
 					
 					PF.FRAMES[id].PowerTextCen:SetPoint("CENTER", PF.FRAMES[id].PowerBackground, "CENTER", 0, 0)
 				else
@@ -536,20 +536,20 @@ function PFUpdateSize()
 
 
 
-				PF.FRAMES[id].BuffBar:SetSize(7 * BUSI, BUSI)
+				PF.FRAMES[id].BuffBar:SetSize(7 * BUFF_SIZE, BUFF_SIZE)
 				PF.FRAMES[id].BuffBar:SetPoint("BOTTOMRIGHT", PF.FRAMES[id].HealthBackground, "BOTTOMRIGHT", -1, 1)
 
-				PF.FRAMES[id].DebuffBar:SetSize(7 * DESI, DESI)
+				PF.FRAMES[id].DebuffBar:SetSize(7 * DEBUFF_SIZE, DEBUFF_SIZE)
 				PF.FRAMES[id].DebuffBar:SetPoint("BOTTOMLEFT", PF.FRAMES[id].HealthBackground, "BOTTOMLEFT", 1, 1)
 
 				for i = 1, 7 do
-					PF.FRAMES[id].BuffBar[i]:SetPoint("TOPRIGHT", PF.FRAMES[id].BuffBar, "TOPRIGHT", -(i - 1) * BUSI, 0)
-					PF.FRAMES[id].BuffBar[i]:SetSize(BUSI, BUSI)
+					PF.FRAMES[id].BuffBar[i]:SetPoint("TOPRIGHT", PF.FRAMES[id].BuffBar, "TOPRIGHT", -(i - 1) * BUFF_SIZE, 0)
+					PF.FRAMES[id].BuffBar[i]:SetSize(BUFF_SIZE, BUFF_SIZE)
 
-					PF.FRAMES[id].DebuffBar[i]:SetPoint("TOPLEFT", PF.FRAMES[id].DebuffBar, "TOPLEFT", (i - 1) * DESI, 0)
-					PF.FRAMES[id].DebuffBar[i]:SetSize(DESI, DESI)
+					PF.FRAMES[id].DebuffBar[i]:SetPoint("TOPLEFT", PF.FRAMES[id].DebuffBar, "TOPLEFT", (i - 1) * DEBUFF_SIZE, 0)
+					PF.FRAMES[id].DebuffBar[i]:SetSize(DEBUFF_SIZE, DEBUFF_SIZE)
 					if PF.FRAMES[id].DebuffBar[i].Border ~= nil then
-						PF.FRAMES[id].DebuffBar[i].Border:SetSize(DESI, DESI)
+						PF.FRAMES[id].DebuffBar[i].Border:SetSize(DEBUFF_SIZE, DEBUFF_SIZE)
 					end
 				end
 
@@ -580,11 +580,11 @@ function PFUpdateSize()
 
 				-- PLAYER BUTTON
 				if GroupHorizontal then
-					PF.FRAMES[id].btn:SetSize(HEWI, PLHE)
-					PF.FRAMES[id].btn:SetPoint("TOPLEFT", PF, "TOPLEFT", OUBR + (ply - 1) * (HEWI + COSP), -(OUBR + (group - 1) * (PLHE + ROSP)))
+					PF.FRAMES[id].btn:SetSize(HP_WIDTH, PLHE)
+					PF.FRAMES[id].btn:SetPoint("TOPLEFT", PF, "TOPLEFT", OUTER_BORDER + (ply - 1) * (HP_WIDTH + COLUMN_SPACING), -(OUTER_BORDER + (group - 1) * (PLHE + ROW_SPACING)))
 				else
-					PF.FRAMES[id].btn:SetSize(HEWI, PLHE)
-					PF.FRAMES[id].btn:SetPoint("TOPLEFT", PF, "TOPLEFT", OUBR + (group - 1) * (HEWI + COSP), -(OUBR + (ply - 1) * (PLHE + ROSP)))
+					PF.FRAMES[id].btn:SetSize(HP_WIDTH, PLHE)
+					PF.FRAMES[id].btn:SetPoint("TOPLEFT", PF, "TOPLEFT", OUTER_BORDER + (group - 1) * (HP_WIDTH + COLUMN_SPACING), -(OUTER_BORDER + (ply - 1) * (PLHE + ROW_SPACING)))
 				end
 
 				id = id + 1
@@ -610,10 +610,10 @@ function UpdateUnitInfo(uf, unit)
 		ID = tonumber(ID)
 
 		-- Health
-		uf.HealthBar:SetWidth(HEWI)
+		uf.HealthBar:SetWidth(HP_WIDTH)
 		uf.HealthBar:SetPoint("TOPLEFT", uf, "TOPLEFT", 0, 0)
 		if UnitHealth(unit) > 0 and UnitHealthMax(unit) > 0 then
-			uf.HealthBar:SetWidth(UnitHealth(unit) / UnitHealthMax(unit) * HEWI)
+			uf.HealthBar:SetWidth(UnitHealth(unit) / UnitHealthMax(unit) * HP_WIDTH)
 
 			uf.HealthBar:Show()
 		else
@@ -624,8 +624,8 @@ function UpdateUnitInfo(uf, unit)
 			local PREDICTION = UnitGetIncomingHeals(unit);
 
 			if PREDICTION and PREDICTION > 0 then
-				local rec = PREDICTION / UnitHealthMax(unit) * HEWI
-				if not OVER then
+				local rec = PREDICTION / UnitHealthMax(unit) * HP_WIDTH
+				if not OVERLAP then
 					if rec + uf.HealthBar:GetWidth() > uf.HealthBackground:GetWidth() + 1 then
 						rec = uf.HealthBackground:GetWidth() - uf.HealthBar:GetWidth()
 						if rec <= 0 then
@@ -645,16 +645,16 @@ function UpdateUnitInfo(uf, unit)
 			local ABSORB = UnitGetTotalAbsorbs(unit);
 			
 			if uf.Prediction:IsShown() then
-				uf.Absorb:SetSize(0, HEHE)
+				uf.Absorb:SetSize(0, HP_HEIGHT)
 				uf.Absorb:SetPoint("TOPLEFT", uf.Prediction, "TOPRIGHT", 0, 0)
 			else
-				uf.Absorb:SetSize(0, HEHE)
+				uf.Absorb:SetSize(0, HP_HEIGHT)
 				uf.Absorb:SetPoint("TOPLEFT", uf.HealthBar, "TOPRIGHT", 0, 0)
 			end
 
 			if ABSORB and ABSORB > 0 then
-				local rec = ABSORB / UnitHealthMax(unit) * HEWI
-				if not OVER then
+				local rec = ABSORB / UnitHealthMax(unit) * HP_WIDTH
+				if not OVERLAP then
 					if rec + uf.HealthBar:GetWidth() + uf.Prediction:GetWidth() > uf.HealthBackground:GetWidth() + 1 then
 						rec = uf.HealthBackground:GetWidth() - uf.HealthBar:GetWidth() - uf.Prediction:GetWidth()
 						if rec <= 0 then
@@ -680,17 +680,17 @@ function UpdateUnitInfo(uf, unit)
 		if name == nil then
 			name = ""
 		end
-		if TETOTY == "Name" then
+		if TOP_TEXT_TYPE == "Name" then
 			text = name
-		elseif TETOTY == "Class" then
+		elseif TOP_TEXT_TYPE == "Class" then
 			text = class
-		elseif TETOTY == "Class + Name" then
+		elseif TOP_TEXT_TYPE == "Class + Name" then
 			text = string.sub(class, 0, 3) .. ". " .. name
-		elseif TETOTY == "Name + Class" then
+		elseif TOP_TEXT_TYPE == "Name + Class" then
 			text = string.sub(name, 0, 3) .. ". " .. class
 		end
-		if HEWI - 16 * 2 > 0 then
-			uf.HealthTextTop:SetWidth(HEWI - 16 * 2)
+		if HP_WIDTH - 16 * 2 > 0 then
+			uf.HealthTextTop:SetWidth(HP_WIDTH - 16 * 2)
 		else
 			uf.HealthTextTop:SetWidth(1)
 		end
@@ -698,15 +698,15 @@ function UpdateUnitInfo(uf, unit)
 		uf.HealthTextTop:SetText(text)
 
 		local HealthTextCen = ":O"
-		if TECETY == "Health in Percent" then
+		if HP_TEXT_TYPE == "Health in Percent" then
 			local rec = UnitHealth(unit) / UnitHealthMax(unit) * 100
-			local val = string.format("%." .. GetConfig("DECI", 0) .. "f", rec)
+			local val = string.format("%." .. GetConfig("DECIMALS", 0) .. "f", rec)
 			if rec > 0 then
 				HealthTextCen = val .. "%"
 			else
 				HealthTextCen = ""
 			end
-		elseif TECETY == "Only health" then
+		elseif HP_TEXT_TYPE == "Only health" then
 			local val = string.format(UnitHealth(unit))
 			HealthTextCen = val
 		else
@@ -859,7 +859,7 @@ function UpdateUnitInfo(uf, unit)
 
 		local _, class = UnitClass(unit);
 		-- POWER
-		if SHPO then
+		if SHOW_POWER then
 			local power = UnitPower(unit, Enum.PowerType.Mana)
 			local powermax = UnitPowerMax(unit, Enum.PowerType.Mana)
 			if class == "MONK" then
@@ -870,11 +870,11 @@ function UpdateUnitInfo(uf, unit)
 				powermax = UnitPowerMax(unit)
 			end
 
-			uf.PowerBar:SetHeight(POHE)
+			uf.PowerBar:SetHeight(POWER_HEIGHT)
 			if power and powermax and power > 0 and powermax > 0 and power <= powermax then
-				uf.PowerBar:SetWidth(power / powermax * HEWI)
+				uf.PowerBar:SetWidth(power / powermax * HP_WIDTH)
 
-				uf.PowerTextCen:SetText(string.format("%." .. GetConfig("DECI", 0) .. "f", power / powermax * 100) .. "%")
+				uf.PowerTextCen:SetText(string.format("%." .. GetConfig("DECIMALS", 0) .. "f", power / powermax * 100) .. "%")
 
 				uf.PowerBar:Show()
 			else
@@ -1015,8 +1015,8 @@ function UpdateUnitInfo(uf, unit)
 					if uf.DebuffBar[idde].symbol then
 						local fontFamily, fontSize, fontFlags = uf.DebuffBar[idde].symbol:GetFont()
 						uf.DebuffBar[idde].symbol:SetFont(fontFamily, 9, fontFlags)
-						uf.DebuffBar[idde].symbol:SetWidth(DESI)
-						uf.DebuffBar[idde].symbol:SetHeight(DESI / 2)
+						uf.DebuffBar[idde].symbol:SetWidth(DEBUFF_SIZE)
+						uf.DebuffBar[idde].symbol:SetHeight(DEBUFF_SIZE / 2)
 						if DebuffTypeSymbol[debuffType] ~= nil then
 							uf.DebuffBar[idde].symbol:SetText(DebuffTypeSymbol[debuffType]);
 						end
