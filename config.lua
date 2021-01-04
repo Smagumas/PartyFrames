@@ -145,7 +145,9 @@ function InitSettings()
 	PFSettings.panel.name = settingname
 
 	Y = 0
-	Y = Y - 10
+	XGAP = 250
+	XDEFAULT = 20
+	YGAP = 32
 	-- local text = PFSettings.panel:CreateFontString(nil, "ARTWORK")
 	-- text:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
 	-- text:SetPoint("TOPLEFT", PFSettings.panel, "TOPLEFT", 10, Y)
@@ -153,7 +155,16 @@ function InitSettings()
 
 	-- Parent panel stuff
 	-- CreateSlider: parent, key, vval, x, y, vmin, vmax, steps, lstr
-	CreateSlider(PFSettings.panel, "DECIMALS", 0, 12, -40, 0, 3, 1, "DECIMALS")
+	Y = Y - YGAP
+	X = XDEFAULT
+	CreateSlider(PFSettings.panel, "DECIMALS", 0, X, Y, 0, 3, 1, "DECIMALS")
+	X = X + XGAP
+	CreateCheckBox(PFSettings.panel, "SHOW_POWER", true, X, Y, "SHOW_POWER")
+	Y = Y - YGAP
+	CreateCheckBox(PFSettings.panel, "SHOW_HP", true, X, Y, "SHOW_HP")
+	Y = Y - YGAP
+	CreateCheckBox(PFSettings.panel, "SHOW_CLASS", true, X, Y, "SHOW_CLASS")
+
 
 	local b = CreateFrame("Button", "MyButton", PFSettings.panel, "UIPanelButtonTemplate")
 	b:SetSize(200, 24) -- width, height
@@ -229,49 +240,46 @@ function InitSettings()
 	CreateComboBox(PFSettings.gpanel, "GTECETY", "Health in Percent", 0, Y, "HP_TEXT_TYPE", {"Health in Percent", "Only health", "None"})
 
 	Y = Y - YGAP
-	CreateCheckBox(PFSettings.gpanel, "GSHPO", true, 12, Y, "SHOW_POWER") -- parent, key, vval, x, y, lstr)
-
-	Y = Y - YGAP
-	CreateCheckBox(PFSettings.gpanel, "GGRHO", false, 12, Y, "HORIZ_PARTY") -- parent, key, vval, x, y, lstr)
+	CreateCheckBox(PFSettings.gpanel, "HORIZ_PARTY", false, 12, Y, "HORIZ_PARTY") -- parent, key, vval, x, y, lstr)
 
 	Y = Y - 20
 	CreateCheckBox(PFSettings.gpanel, "GOVER", true, 12, Y, "OVERLAP") -- parent, key, vval, x, y, lstr)
 
 	Y = Y - 48
 	X = XDEFAULT
-	CreateSlider(PFSettings.gpanel, "GOUBR", 6, X, Y, 0, 20, 1, "OUTER_BORDER")
+	CreateSlider(PFSettings.gpanel, "OUTER_BORDER", 6, X, Y, 0, 20, 1, "OUTER_BORDER")
 	X = X + XGAP
-	CreateSlider(PFSettings.gpanel, "GROSP", 6, X, Y, 0, 50, 1, "ROW_SPACING")
+	CreateSlider(PFSettings.gpanel, "ROW_SPACING", 6, X, Y, 0, 50, 1, "ROW_SPACING")
 
 	Y = Y - YGAP
 	X = XDEFAULT
-	CreateSlider(PFSettings.gpanel, "GCOSP", 6, X, Y, 0, 50, 1, "COLUMN_SPACING")
+	CreateSlider(PFSettings.gpanel, "COLUMN_SPACING", 6, X, Y, 0, 50, 1, "COLUMN_SPACING")
 	X = X + XGAP
-	CreateSlider(PFSettings.gpanel, "GHEWI", 120, X, Y, 20, 300, 1, "HP_WIDTH")
+	CreateSlider(PFSettings.gpanel, "HP_WIDTH", 120, X, Y, 20, 300, 1, "HP_WIDTH")
 
 	Y = Y - YGAP
 	X = XDEFAULT
-	CreateSlider(PFSettings.gpanel, "GHEHE", 60, X, Y, 20, 300, 1, "HP_HEIGHT")
+	CreateSlider(PFSettings.gpanel, "HP_HEIGHT", 60, X, Y, 20, 300, 1, "HP_HEIGHT")
 	X = X + XGAP
-	CreateSlider(PFSettings.gpanel, "GPOWI", 120, X, Y, 8, 300, 1, "POWER_WIDTH")
+	CreateSlider(PFSettings.gpanel, "POWER_WIDTH", 120, X, Y, 8, 300, 1, "POWER_WIDTH")
 
 	Y = Y - YGAP
 	X = XDEFAULT
-	CreateSlider(PFSettings.gpanel, "GPOHE", 20, X, Y, 8, 300, 1, "POWER_HEIGHT")
+	CreateSlider(PFSettings.gpanel, "POWER_HEIGHT", 20, X, Y, 8, 300, 1, "POWER_HEIGHT")
 	X = X + XGAP
-	CreateSlider(PFSettings.gpanel, "GDESI", 16, X, Y, 8, 64, 1, "DEBUFF_SIZE")
+	CreateSlider(PFSettings.gpanel, "DEBUFF_SIZE", 16, X, Y, 8, 64, 1, "DEBUFF_SIZE")
 
 	Y = Y - YGAP
 	X = XDEFAULT
-	CreateSlider(PFSettings.gpanel, "GBUSI", 16, X, Y, 8, 64, 1, "BUFF_SIZE")
+	CreateSlider(PFSettings.gpanel, "BUFF_SIZE", 16, X, Y, 8, 64, 1, "BUFF_SIZE")
 	X = X + XGAP
-	CreateSlider(PFSettings.gpanel, "GHPSIZE", 11, X, Y, 8, 64, 1, "HPSIZE")
+	CreateSlider(PFSettings.gpanel, "HP_SIZE", 11, X, Y, 8, 64, 1, "HP_SIZE")
 
 	Y = Y - YGAP
 	X = XDEFAULT
-	CreateSlider(PFSettings.gpanel, "GHPPOSX", 16, X, Y, -20, 20, 1, "HPPOSX")
+	CreateSlider(PFSettings.gpanel, "HP_POS_X", 16, X, Y, -20, 20, 1, "HP_POS_X")
 	X = X + XGAP
-	CreateSlider(PFSettings.gpanel, "GHPPOSY", 16, X, Y, -20, 20, 1, "HPPOSY")
+	CreateSlider(PFSettings.gpanel, "HP_POS_Y", 16, X, Y, -20, 20, 1, "HP_POS_Y")
 
 	InterfaceOptions_AddCategory(PFSettings.gpanel)
 end

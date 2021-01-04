@@ -401,16 +401,18 @@ function PFSortUnits()
 	end
 end
 
-local OUTER_BORDER = 0
-local COLUMN_SPACING = 0
-local ROW_SPACING = 0
-local HP_WIDTH = 0
-local HP_HEIGHT = 0
-local POWER_WIDTH = 0
-local POWER_HEIGHT = 0
+local OUTER_BORDER = 4
+local COLUMN_SPACING = 4
+local ROW_SPACING = 40
+local HP_WIDTH = 180
+local HP_HEIGHT = 68
+local POWER_WIDTH = 180
+local POWER_HEIGHT = 20
 local PLWI = 0
 local PLHE = 0
 local SHOW_POWER = true
+local SHOW_HP = true
+local SHOW_CLASS = true
 local GroupHorizontal = false
 local OVERLAP = true
 local BUFF_SIZE = 16
@@ -427,24 +429,26 @@ function PFUpdateSize()
 
 		PFSortUnits()
 
-		OUTER_BORDER = GetConfig("GOUBR", 6)
-		COLUMN_SPACING = GetConfig("GCOSP", 4)
-		ROW_SPACING = GetConfig("GROSP", 4)
-		HP_WIDTH = GetConfig("GHEWI", 120)
-		HP_HEIGHT = GetConfig("GHEHE", 60)
-		POWER_WIDTH = GetConfig("GPOWI", 120)
-		POWER_HEIGHT = GetConfig("GPOHE", 20)
+		OUTER_BORDER = GetConfig("OUTER_BORDER", 6)
+		COLUMN_SPACING = GetConfig("COLUMN_SPACING", 4)
+		ROW_SPACING = GetConfig("ROW_SPACING", 4)
+		HP_WIDTH = GetConfig("HP_WIDTH", 180)
+		HP_HEIGHT = GetConfig("HP_HEIGHT", 60)
+		POWER_WIDTH = GetConfig("POWER_WIDTH", 180)
+		POWER_HEIGHT = GetConfig("POWER_HEIGHT", 20)
 
-		SHOW_POWER = GetConfig("GSHPO", true)
+		SHOW_POWER = GetConfig("SHOW_POWER", true)
+		SHOW_HP = GetConfig("SHOW_HP", true)
+		SHOW_CLASS = GetConfig("SHOW_CLASS", true)
 
-		GroupHorizontal = GetConfig("GGRHO", false)
+		GroupHorizontal = GetConfig("HORIZ_PARTY", false)
 
-		BUFF_SIZE = GetConfig("GBUSI", 16)
-		DEBUFF_SIZE = GetConfig("GDESI", 16)
+		BUFF_SIZE = GetConfig("BUFF_SIZE", 16)
+		DEBUFF_SIZE = GetConfig("DEBUFF_SIZE", 16)
 
-		HPSIZE = GetConfig("GHPSIZE", 11);
-		HPPOSX = GetConfig("GHPPOSX", 1);
-		HPPOSY = GetConfig("GHPPOSY", 0);
+		HP_SIZE = GetConfig("HP_SIZE", 33);
+		HP_POS_X = GetConfig("HP_POS_X", 1);
+		HP_POS_Y = GetConfig("HP_POS_Y", -2);
 
 		TOP_TEXT_TYPE = GetConfig("GTETOTY", "Name")
 		HP_TEXT_TYPE = GetConfig("GTECETY", "Health in Percent")
@@ -511,8 +515,8 @@ function PFUpdateSize()
 
 				PF.FRAMES[id].HealthTextTop:SetPoint("TOP", PF.FRAMES[id].HealthBackground, "TOP", 0, -3)
 
-				PF.FRAMES[id].HealthTextCen:SetPoint("CENTER", PF.FRAMES[id].HealthBackground, "CENTER", HPPOSX, HPPOSY)
-				PF.FRAMES[id].HealthTextCen:SetFont("Fonts\\ARIALN.ttf", HPSIZE, "")
+				PF.FRAMES[id].HealthTextCen:SetPoint("CENTER", PF.FRAMES[id].HealthBackground, "CENTER", HP_POS_X, HP_POS_Y)
+				PF.FRAMES[id].HealthTextCen:SetFont("Fonts\\ARIALN.ttf", HP_SIZE, "")
 
 				PF.FRAMES[id].HealthTextBot:SetPoint("BOTTOM", PF.FRAMES[id].HealthBackground, "BOTTOM", 0, 3)
 				
@@ -520,7 +524,6 @@ function PFUpdateSize()
 
 				-- Power Bar
 				if SHOW_POWER then
-
 					PF.FRAMES[id].PowerBackground:SetSize(HP_WIDTH, POWER_HEIGHT)
 					PF.FRAMES[id].PowerBackground:SetPoint("TOPLEFT", PF.FRAMES[id], "TOPLEFT", 0, -HP_HEIGHT)
 
@@ -671,6 +674,7 @@ function UpdateUnitInfo(uf, unit)
 			end
 		end
 
+		-- TOP TEXT STUFF
 		local text = ""
 		local class = UnitClass(unit)
 		local name = UnitName(unit)
@@ -697,8 +701,9 @@ function UpdateUnitInfo(uf, unit)
 		uf.HealthTextTop:SetHeight(14)
 		uf.HealthTextTop:SetText(text)
 
+		-- CENTER TEXT STUFF
 		local HealthTextCen = ":O"
-		if HP_TEXT_TYPE == "Health in Percent" then
+		if HP_TEXT_TYPE == "Health in Percent" and SHOW_HP then
 			local rec = UnitHealth(unit) / UnitHealthMax(unit) * 100
 			local val = string.format("%." .. GetConfig("DECIMALS", 0) .. "f", rec)
 			if rec > 0 then
@@ -706,7 +711,7 @@ function UpdateUnitInfo(uf, unit)
 			else
 				HealthTextCen = ""
 			end
-		elseif HP_TEXT_TYPE == "Only health" then
+		elseif HP_TEXT_TYPE == "Only health" and SHOW_HP then
 			local val = string.format(UnitHealth(unit))
 			HealthTextCen = val
 		else
@@ -720,18 +725,9 @@ function UpdateUnitInfo(uf, unit)
 
 		uf.HealthTextCen:SetText(HealthTextCen)
 
-		if GetMaxLevelForExpansionLevel ~= nil and GetMaxLevelForExpansionLevel(GetAccountExpansionLevel()) ~= UnitLevel(unit) then
-			if UnitEffectiveLevel and UnitEffectiveLevel(unit) ~= UnitLevel(unit) then
-				uf.HealthTextBot:SetText(UnitEffectiveLevel(unit) .. " (" .. UnitLevel(unit) .. ")")
-			else
-				uf.HealthTextBot:SetText(UnitLevel(unit))
-			end
-		elseif GetMaxLevelForExpansionLevel == nil then
-			if UnitLevel(unit) < 60 then
-				uf.HealthTextBot:SetText(UnitLevel(unit))
-			else
-				uf.HealthTextBot:SetText("")
-			end
+		-- BOTTOM TEXT STUFF
+		if UnitLevel(unit) > 9 and SHOW_CLASS then
+			uf.HealthTextBot:SetText(class);
 		else
 			uf.HealthTextBot:SetText("")
 		end

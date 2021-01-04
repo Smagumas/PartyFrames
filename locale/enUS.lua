@@ -22,6 +22,12 @@ function PFLang_enUS()
 	lang.HP_TEXT_TYPE = "Healthtext type"
 
 	lang.SHOW_POWER = "Show Power"
+	lang.SHOW_HP = "Show HP"
+	lang.SHOW_CLASS = "Show Class"
+
+	lang.HP_SIZE = "Hp Size"
+	lang.HP_POS_X = "Hp Pos X"
+	lang.HP_POS_Y = "Hp Pos Y"
 
 	lang.DEBUFF_TYPES = "DebuffTypes"
 
