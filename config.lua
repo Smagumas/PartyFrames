@@ -1,13 +1,10 @@
 -- By Smagumas
 
 PFBUILD = "CLASSIC"
-if select(4, GetBuildInfo()) > 19999 then
+if select(4, GetBuildInfo()) > 20000 then
 	PFBUILD = "RETAIL"
 end
 
-
-local vars = false
-local addo = false
 
 local PFLoaded = false
 
@@ -37,10 +34,12 @@ end
 
 
 
-function CreateSlider(parent, key, vval, x, y, vmin, vmax, steps, lstr)
+function CreateSlider(parent, key, vval, x, y, vmin, vmax, steps, lstr, w)
 	local SL = CreateFrame("Slider", nil, parent, "OptionsSliderTemplate")
-
-	SL:SetWidth(200)
+	if w == nil then
+		w = 200
+	end
+	SL:SetWidth(w)
 	SL:SetPoint("TOPLEFT", x, y)
 
 	SL.Low:SetText(vmin)
@@ -146,7 +145,7 @@ function InitSettings()
 
 	Y = 0
 	XGAP = 250
-	XDEFAULT = 20
+	XDEFAULT = 50
 	YGAP = 32
 	-- local text = PFSettings.panel:CreateFontString(nil, "ARTWORK")
 	-- text:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
@@ -164,11 +163,23 @@ function InitSettings()
 	CreateCheckBox(PFSettings.panel, "SHOW_HP", true, X, Y, "SHOW_HP")
 	Y = Y - YGAP
 	CreateCheckBox(PFSettings.panel, "SHOW_CLASS", true, X, Y, "SHOW_CLASS")
+	Y = Y - YGAP
+	X = XDEFAULT
+	CreateCheckBox(PFSettings.panel, "MISSING_HP_COLOR", true, X, Y, "MISSING_HP_COLOR")
+	Y = Y - YGAP + 10;
+	X = XDEFAULT
+	CreateCheckBox(PFSettings.panel, "PLAY_SOUND_LOW_HP", true, X, Y, "PLAY_SOUND_LOW_HP")
+	Y = Y - YGAP
+	CreateSlider(PFSettings.panel, "MISSING_HP_YELLOW", 0, X, Y, 0, 100, 1, "MISSING_HP_YELLOW")
+	X = X + XGAP
+	CreateSlider(PFSettings.panel, "MISSING_HP_RED", 0, X, Y, 0, 100, 1, "MISSING_HP_RED")
+
+
 
 
 	local b = CreateFrame("Button", "MyButton", PFSettings.panel, "UIPanelButtonTemplate")
 	b:SetSize(200, 24) -- width, height
-	b:SetText("DONATE")
+	b:SetText("Support development")
 	b:SetPoint("BOTTOMLEFT", 10, 10)
 	b:SetScript("OnClick", function()
 		local iconbtn = 32
@@ -189,7 +200,7 @@ function InitSettings()
 		eb:SetFrameStrata("DIALOG")
 		eb:SetSize(280, iconbtn)
 		eb:SetAutoFocus(false)
-		eb:SetText("https://www.paypal.com")
+		eb:SetText("https://paypal.me/Smagumas")
 		eb:SetPoint("TOPLEFT", 10, -10 - iconbtn)
 
 		s.close = CreateFrame("Button", "closepaypal", s, "UIPanelButtonTemplate")
@@ -203,8 +214,6 @@ function InitSettings()
 	end)
 
 	InterfaceOptions_AddCategory(PFSettings.panel)
-
-
 
 	local settinggname = PARTY
 	PFSettings.gpanel = CreateFrame("FRAME", settinggname, PFSettings.panel)
@@ -296,12 +305,6 @@ function f:OnEvent(event)
 		PFSizing = true
 	end
 
-	if event == "VARIABLES_LOADED" then
-		vars = true
-	end
-	if event == "ADDON_LOADED" then
-		addo = true
-	end
 	if event == "PLAYER_ENTERING_WORLD" then
 		PFLoaded = true
 

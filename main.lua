@@ -1,8 +1,5 @@
--- By D4KiR
+-- By Smagumas
 
-
-
--- "Globals"
 local PFUNITSGROUP = {}
 for i = 1, 4 do
 	tinsert(PFUNITSGROUP, "PARTY" .. i)
@@ -139,7 +136,7 @@ for group = 1, 8 do
 
 		PF.FRAMES[id].HealthBar = PF.FRAMES[id]:CreateTexture(nil, "BACKGROUND")
 		PF.FRAMES[id].HealthBar:SetTexture("Interface/RaidFrame/Raid-Bar-Hp-Fill")--"Interface/Addons/PartyFrames/assets/bar")
-		PF.FRAMES[id].HealthBar:SetColorTexture(0.4, 0.4, 0.4)
+		PF.FRAMES[id].HealthBar:SetColorTexture(0.8, 0.8, 0.8)
 
 		if PFBUILD ~= "CLASSIC" then
 			PF.FRAMES[id].Prediction = PF.FRAMES[id]:CreateTexture(nil, "BACKGROUND")
@@ -413,6 +410,10 @@ local PLHE = 0
 local SHOW_POWER = true
 local SHOW_HP = true
 local SHOW_CLASS = true
+local MISSING_HP_COLOR = true;
+local PLAY_SOUND_LOW_HP = true;
+local MISSING_HP_RED = 35;
+local MISSING_HP_YELLOW = 75;
 local GroupHorizontal = false
 local OVERLAP = true
 local BUFF_SIZE = 16
@@ -440,6 +441,10 @@ function PFUpdateSize()
 		SHOW_POWER = GetConfig("SHOW_POWER", true)
 		SHOW_HP = GetConfig("SHOW_HP", true)
 		SHOW_CLASS = GetConfig("SHOW_CLASS", true)
+		MISSING_HP_COLOR = GetConfig("MISSING_HP_COLOR", true)
+		PLAY_SOUND_LOW_HP = GetConfig("PLAY_SOUND_LOW_HP", true)
+		MISSING_HP_RED = tonumber(GetConfig("MISSING_HP_RED", 35))
+		MISSING_HP_YELLOW = tonumber(GetConfig("MISSING_HP_YELLOW", 75))
 
 		GroupHorizontal = GetConfig("HORIZ_PARTY", false)
 
@@ -488,7 +493,6 @@ function PFUpdateSize()
 				if GroupHorizontal then
 					PF.FRAMES[id]:SetSize(PLWI, HP_HEIGHT)
 					PF.FRAMES[id]:SetPoint("TOPLEFT", PF, "TOPLEFT", OUTER_BORDER + (ply - 1) * (HP_WIDTH + COLUMN_SPACING), -(OUTER_BORDER + (group - 1) * (PLHE + ROW_SPACING)))
-
 				else
 					PF.FRAMES[id]:SetSize(HP_WIDTH, PLHE)
 					PF.FRAMES[id]:SetPoint("TOPLEFT", PF, "TOPLEFT", OUTER_BORDER + (group - 1) * (HP_WIDTH + COLUMN_SPACING), -(OUTER_BORDER + (ply - 1) * (PLHE + ROW_SPACING)))
@@ -501,6 +505,7 @@ function PFUpdateSize()
 				
 				PF.FRAMES[id].HealthBar:SetSize(HP_WIDTH, HP_HEIGHT)
 				PF.FRAMES[id].HealthBar:SetPoint("TOPLEFT", PF.FRAMES[id], "TOPLEFT", 0, 0)
+				
 				
 				if PFBUILD ~= "CLASSIC" then
 					PF.FRAMES[id].Prediction:ClearAllPoints()
@@ -618,6 +623,21 @@ function UpdateUnitInfo(uf, unit)
 		if UnitHealth(unit) > 0 and UnitHealthMax(unit) > 0 then
 			uf.HealthBar:SetWidth(UnitHealth(unit) / UnitHealthMax(unit) * HP_WIDTH)
 
+			if MISSING_HP_COLOR then
+				local currentHpPercent = UnitHealth(unit) / UnitHealthMax(unit) * 100
+				if currentHpPercent <= MISSING_HP_RED then
+					if PLAY_SOUND_LOW_HP then
+						PlaySound(10571, "Sound")
+					end
+					uf.HealthBar:SetColorTexture(1, 0, 0)
+				elseif currentHpPercent > MISSING_HP_RED and currentHpPercent < MISSING_HP_YELLOW then
+					uf.HealthBar:SetColorTexture(1, 1, 0)
+				else
+					uf.HealthBar:SetColorTexture(0.1, 1, 0.1)
+				end
+			else
+				uf.HealthBar:SetColorTexture(0.8, 0.8, 0.8)
+			end
 			uf.HealthBar:Show()
 		else
 			uf.HealthBar:Hide()
@@ -1137,7 +1157,7 @@ PF:SetScript("OnEvent", PF.OnEvent)
 
 
 function ShowPartyFrame()
-	-- FAKE
+	-- placeholder
 end
 
 -- Hide Group Frame
@@ -1147,7 +1167,7 @@ for i = 1, 4 do
 		partyframe:UnregisterAllEvents()
 		partyframe.OldShow = partyframe.Show
 		function partyframe:Show()
-			-- FAKE
+			-- placeholder
 		end
 		partyframe:Hide()
 	end
@@ -1159,7 +1179,7 @@ if _G["CompactRaidFrameContainer"] ~= nil then
 	crfc:UnregisterAllEvents()
 	crfc.OldShow = crfc.Show
 	function crfc:Show()
-		-- FAKE
+		-- placeholder
 	end
 	crfc:Hide()
 end
